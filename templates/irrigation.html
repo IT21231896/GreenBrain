@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="fas fa-tint me-2"></i>Irrigation Prediction</h2>
+            <p class="text-muted">Calculate the optimal water level needed for your crops based on environmental conditions.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Sensor Data Overview -->
+            <div class="card shadow-sm mb-4 border-0 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-sensor me-2"></i>Current Sensor Readings</h5>
+                    <div class="row text-center">
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="p-2 bg-primary bg-opacity-10 rounded">
+                                <small class="text-muted">Temperature</small>
+                                <p class="mb-0 fw-bold">{{ sensor_data.get('temperature', 'N/A') }} °C</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="p-2 bg-info bg-opacity-10 rounded">
+                                <small class="text-muted">Humidity</small>
+                                <p class="mb-0 fw-bold">{{ sensor_data.get('humidity', 'N/A') }}%</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="p-2 bg-success bg-opacity-10 rounded">
+                                <small class="text-muted">Soil Moisture</small>
+                                <p class="mb-0 fw-bold">{{ sensor_data.get('soilMoisture', 'N/A') }}%</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="p-2 bg-warning bg-opacity-10 rounded">
+                                <small class="text-muted">Light Level</small>
+                                <p class="mb-0 fw-bold">{{ sensor_data.get('lightLevel', 'N/A') }} lux</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prediction Form -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Temperature (°C)</label>
+                                <input type="number" step="0.1" class="form-control" name="temperature" 
+                                       value="{{ sensor_data.get('temperature', '') }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Humidity (%)</label>
+                                <input type="number" step="0.1" class="form-control" name="humidity" 
+                                       value="{{ sensor_data.get('humidity', '') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Soil Moisture (%)</label>
+                                <input type="number" step="0.1" class="form-control" name="soil_moisture" 
+                                       value="{{ sensor_data.get('soilMoisture', '') }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Light Level (lux)</label>
+                                <input type="number" step="1" class="form-control" name="light_level" 
+                                       value="{{ sensor_data.get('lightLevel', '') }}" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
+                            <i class="fas fa-calculator me-2"></i>Predict Water Needs
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display Prediction -->
+    {% if prediction %}
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 bg-light">
+                <div class="card-body text-center py-4">
+                    <h3 class="card-title text-primary mb-3"><i class="fas fa-water me-2"></i>Irrigation Recommendation</h3>
+                    
+                    {% if prediction == "Invalid input" %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Please enter valid numbers for all fields
+                        </div>
+                    {% else %}
+                        <div class="display-4 text-success fw-bold mb-2">{{ prediction }}</div>
+                        <p class="text-muted">Optimal water amount for current conditions</p>
+                        
+                        <div class="mt-4">
+                            <div class="progress" style="height: 30px;">
+                                {% set water_level = prediction.split(' ')[0] | float %}
+                                {% if water_level < 1 %}
+                                    {% set width = 20 %}
+                                    {% set bg = 'bg-danger' %}
+                                {% elif water_level < 2 %}
+                                    {% set width = 40 %}
+                                    {% set bg = 'bg-warning' %}
+                                {% elif water_level < 3 %}
+                                    {% set width = 60 %}
+                                    {% set bg = 'bg-info' %}
+                                {% else %}
+                                    {% set width = 80 %}
+                                    {% set bg = 'bg-success' %}
+                                {% endif %}
+                                
+                                <div class="progress-bar {{ bg }} progress-bar-striped progress-bar-animated" 
+                                     role="progressbar" style="width: {{ width }}%" 
+                                     aria-valuenow="{{ width }}" aria-valuemin="0" aria-valuemax="100">
+                                    {{ prediction }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

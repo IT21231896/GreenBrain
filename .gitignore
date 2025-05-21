@@ -1,0 +1,57 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+env/
+venv/
+ENV/
+.venv/
+
+# PyCharm
+.idea/
+
+# VSCode
+.vscode/
+
+# SQLite / Database files
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# Firebase secrets or credentials
+*.json
+!templates/*.json  # Keep this only if you have safe JSON in templates
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Node modules (if using npm for frontend)
+node_modules/
+
+# Test reports
+coverage/
+htmlcov/
+*.cover
+.cache
+nosetests.xml
+coverage.xml
+*.lcov
+
+# Flask cache files
+instance/
+
+# Compiled HTML
+*.html~
+
+# Backup files
+*.bak
+*.old
+*.orig
