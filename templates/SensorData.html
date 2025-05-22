@@ -276,11 +276,26 @@
             alarmSwitch.checked = data.automated_alarm == 1;
             document.getElementById('alarmStatusText').textContent = alarmSwitch.checked ? "Current Status: ON" : "Current Status: OFF";
 
-            // Vent automation Switch
             const ventSwitch = document.getElementById('ventAutomationSwitch');
             ventSwitch.checked = data.vent_status == 1;
             document.getElementById('ventStatusText').textContent = ventSwitch.checked ? "Current Status: ON" : "Current Status: OFF";
 
+            // Custom Ventilation Automation Alerts
+            if (data.vent_status == 1) {
+                const temp = parseFloat(data.temperature);
+
+                if (temp > 35) {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-info';
+                    alertDiv.innerHTML = "🌬️ Temperature is above 35°C. Ventilation windows are opened for cooling.";
+                    alertsContainer.appendChild(alertDiv);
+                } else {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-secondary';
+                    alertDiv.innerHTML = "✅ Ventilation automation is ON, but temperature is optimal. No need to open windows.";
+                    alertsContainer.appendChild(alertDiv);
+                }
+            }
 
             // Tank Visualization
             updateTankVisualization(parseFloat(data.distance));
