@@ -256,119 +256,6 @@ def sensor_data():
 
 
 
-@app.route('/get_sensor_data', methods=['GET'])
-@login_required
-def fetch_sensor_data():
-    sensor_data = sensor_ref.get()
-    alerts = []
-    print(sensor_data)
-
-    if sensor_data:
-        humidity = float(sensor_data.get('humidity', 0))
-        temperature = float(sensor_data.get('temperature', 0))
-        soil_moisture = float(sensor_data.get('soilMoisture', 0))
-        water_level = float(sensor_data.get('waterLevel', 0))
-        tank_height = db.reference('/tank_height_cm').get() or 100
-        distance = float(sensor_data.get('distance', 0))
-        tank_percent = ((tank_height - distance) / tank_height) * 100
-        automation_irrigation = int(sensor_data.get('automation_irrigation', 0))
-        fan_automation = int(sensor_data.get('fan_automation', 0))
-        automated_alarm = int(sensor_data.get('automated_alarm', 0))
-
-
-        #Alarm Buzzer Automation Conditions
-        buzzer_triggered = False
-        if automated_alarm == 1:
-            if water_level > 1000:
-                alerts.append("🚨 Water overflow detected! Buzzer activated.")
-                buzzer_triggered = True
-            if tank_percent < 10:
-                alerts.append("⚠️ Water tank is below 10%. Buzzer activated.")
-                buzzer_triggered = True
-            if temperature > 40:
-                alerts.append("🔥 High temperature! Buzzer activated.")
-                buzzer_triggered = True
-            if soil_moisture < 300 and automation_irrigation == 0:
-                alerts.append("🌱 Soil is dry. Enable auto irrigation or water manually. Buzzer activated.")
-                buzzer_triggered = True
-        else:
-            sensor_ref.update({'buzzer_status': 0})
-
-        sensor_ref.update({'buzzer_status': 1 if buzzer_triggered else 0})
-
-        #Irrigation Motor Automation Conditions
-        if automation_irrigation == 1:
-
-            # Check if soil is dry, water tank and water level are sufficient
-            if soil_moisture > 2500:
-                if tank_percent > 20:
-                    if water_level < 1000:
-                        # Conditions all good - start irrigation
-                        sensor_ref.update({'device1_status': 1})
-                        alerts.append("Irrigation started: Soil moisture is high, and water is available.")
-                    else:
-                        # Water level too high - prevent overflow
-                        sensor_ref.update({'device1_status': 0})
-                        alerts.append("⚠️ Overflow detected: Irrigation stopped to prevent plant pot overflow.")
-                else:
-                    # Water tank too low
-                    sensor_ref.update({'device1_status': 0})
-                    alerts.append(
-                        "🚫 Irrigation stopped: Water tank level is below 20%. Please refill the tank to continue irrigation.")
-            else:
-                # Soil moisture is sufficient, no irrigation needed
-                sensor_ref.update({'device1_status': 0})
-                alerts.append("ℹ️ Soil moisture is within optimal range. No need for irrigation at this time.")
-
-        else:
-            # Automation off, turn off irrigation
-            sensor_ref.update({'device1_status': 0})
-
-
-        #Vemdilation Fan Automation Conditions
-        if fan_automation == 1:
-            if humidity < 70:
-                sensor_ref.update({'device2_status': 1})
-                alerts.append("🌬️ Fan turned ON: Humidity is below 70%, improving air circulation.")
-            elif humidity >= 70:
-                sensor_ref.update({'device2_status': 0})
-                alerts.append("✅ Fan turned OFF: Humidity is at or above 70%, no need for extra ventilation.")
-
-            if temperature > 28:
-                sensor_ref.update({'device2_status': 1})
-                alerts.append("🌬️ Fan turned ON: Temperature is above 28°C, cooling in progress.")
-            elif temperature <= 28:
-                # Only turn off if humidity condition also says so to avoid conflict
-                if humidity >= 70:
-                    sensor_ref.update({'device2_status': 0})
-                    alerts.append("✅ Fan turned OFF: Temperature is at or below 28°C, cooling not needed.")
-        else:
-            sensor_ref.update({'device2_status': 0})
-            alerts.append("⚠️ Fan automation is disabled; fan remains OFF.")
-
-
-        data = {
-            'distance': sensor_data.get('distance', 'N/A'),
-            'waterLevel': sensor_data.get('waterLevel', 'N/A'),
-            'humidity': sensor_data.get('humidity', 'N/A'),
-            'lightLevel': sensor_data.get('lightLevel', 'N/A'),
-            'soilMoisture': sensor_data.get('soilMoisture', 'N/A'),
-            'temperature': sensor_data.get('temperature', 'N/A'),
-            'device1_status': sensor_data.get('device1_status', 'N/A'),
-            'device2_status': sensor_data.get('device2_status', 'N/A'),
-            'fan_automation': fan_automation,
-            'automation_irrigation': automation_irrigation,
-            'automated_alarm': automated_alarm,
-            'alerts': alerts,
-            'buzzer_status': int(sensor_data.get('buzzer_status', 0))
-        }
-
-    else:
-        data = {'message': 'No sensor data available'}
-    return jsonify(data)
-
-
-
 @app.route('/fertilizer', methods=['GET', 'POST'])
 @login_required
 def fertilizer():
@@ -662,24 +549,21 @@ def get_sensor_data_realtime():
 
         #Vemdilation Fan Automation Conditions
         if fan_automation == 1:
-            if humidity < 70:
-                sensor_ref.update({'device2_status': 1})
-                alerts.append("🌬️ Fan turned ON: Humidity is below 70%, improving air circulation.")
-            elif humidity >= 70:
-                sensor_ref.update({'device2_status': 0})
-                alerts.append("✅ Fan turned OFF: Humidity is at or above 70%, no need for extra ventilation.")
+            #if humidity < 70:
+               # sensor_ref.update({'device2_status': 1})
+                #alerts.append("🌬️ Fan turned ON: Humidity is below 70%, improving air circulation.")
+            #elif humidity >= 70:
+             #   sensor_ref.update({'device2_status': 0})
+              #  alerts.append("✅ Fan turned OFF: Humidity is at or above 70%, no need for extra ventilation.")
 
-            if temperature > 28:
+            if temperature > 35 or humidity < 70:
                 sensor_ref.update({'device2_status': 1})
-                alerts.append("🌬️ Fan turned ON: Temperature is above 28°C, cooling in progress.")
-            elif temperature <= 28:
-                # Only turn off if humidity condition also says so to avoid conflict
-                if humidity >= 70:
-                    sensor_ref.update({'device2_status': 0})
-                    alerts.append("✅ Fan turned OFF: Temperature is at or below 28°C, cooling not needed.")
+                alerts.append("🌬️ Fan turned ON: Temperature is above 35°C, cooling in progress.")
+            elif temperature <= 35:
+                sensor_ref.update({'device2_status': 0})
+                alerts.append("✅ Fan turned OFF: Temperature is at or below 35°C, cooling not needed.")
         else:
             sensor_ref.update({'device2_status': 0})
-            alerts.append("⚠️ Fan automation is disabled; fan remains OFF.")
 
 
         data = {
