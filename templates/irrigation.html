@@ -209,18 +209,39 @@
         </div>
     </div>
 
-    <!-- Styled Reason for Prediction Container -->
-    <div class="row justify-content-center mt-4">
-        <div class="col-lg-8">
-            <div class="card shadow-lg border-0 bg-warning bg-opacity-10">
-                <div class="card-body text-center">
-                    <h3 class="card-title">Reason for Prediction</h3>
-                    {% if predicted_water_level != "Invalid input" %}
+<!-- Styled Reason for Prediction Container -->
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        {% set reason_class = "bg-light" %}
+        {% set animation_class = "animate__animated" %}
+        {% if "Critical" in prediction_reason %}
+            {% set reason_class = "bg-danger text-white" %}
+            {% set animation_class = animation_class + " animate__shakeX" %}
+        {% elif "Alert" in prediction_reason %}
+            {% set reason_class = "bg-warning" %}
+            {% set animation_class = animation_class + " animate__headShake" %}
+        {% elif "Warning" in prediction_reason %}
+            {% set reason_class = "bg-orange-200" %}
+            {% set animation_class = animation_class + " animate__pulse" %}
+        {% elif "Notice" in prediction_reason %}
+            {% set reason_class = "bg-info text-white" %}
+            {% set animation_class = animation_class + " animate__fadeIn" %}
+        {% else %}
+            {% set reason_class = "bg-success text-white" %}
+            {% set animation_class = animation_class + " animate__fadeInUp" %}
+        {% endif %}
+
+        <div class="card shadow-lg border-0 {{ reason_class }} {{ animation_class }}">
+            <div class="card-body text-center">
+                <h3 class="card-title">Reason for Prediction</h3>
+                {% if predicted_water_level != "Invalid input" %}
                     <p class="fs-5">{{ prediction_reason }}</p>
-                    {% endif %}
-                </div>
+                {% endif %}
             </div>
         </div>
+    </div>
+</div>
+
     </div>
     {% endif %}
 </div>
