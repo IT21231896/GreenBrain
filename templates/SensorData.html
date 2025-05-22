@@ -148,61 +148,67 @@
         </div>
     </div>
 
-    <!--Relay Switches Control-->
-    <div class="row justify-content-center mt-5">
+    <!-- Relay Control Switches -->
+    <div class="row justify-content-center mt-5 g-4">
 
-        <!-- Automated Irrigation System -->
-        <div class="col-lg-3 mb-3">
-            <div class="card shadow-lg border-0 bg-primary text-white">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Automated Irrigation</h5>
-                    <label for="irrigationSwitch">System Status:</label>
-                    <input type="checkbox" id="irrigationSwitch" data-toggle="toggle">
-                    <p id="irrigationStatusText">Current Status: Loading...</p>
+        <!-- Irrigation -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 text-white" style="background-color: #007bff;">
+                <div class="card-body d-flex flex-column align-items-center justify-content-between text-center">
+                    <h5 class="card-title mb-3">Automated Irrigation</h5>
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" id="irrigationSwitch" style="transform: scale(1.4);">
+                        <label class="form-check-label ms-2" for="irrigationSwitch">Irrigation</label>
+                    </div>
+                    <p id="irrigationStatusText" class="mb-0 small">Current Status: OFF</p>
                 </div>
             </div>
         </div>
 
-        <!-- Fan Automation System -->
-        <div class="col-lg-3 mb-3">
-            <div class="card shadow-lg border-0 bg-dark text-white">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Fan Automation</h5>
-                    <label for="fanAutomationSwitch">System Status:</label>
-                    <input type="checkbox" id="fanAutomationSwitch" data-toggle="toggle">
-                    <p id="fanStatusText">Current Status: Loading...</p>
+        <!-- Fan -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 text-white" style="background-color: #212529;">
+                <div class="card-body d-flex flex-column align-items-center justify-content-between text-center">
+                    <h5 class="card-title mb-3">Fan Automation</h5>
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" id="fanAutomationSwitch" style="transform: scale(1.4);">
+                        <label class="form-check-label ms-2" for="fanAutomationSwitch">Fan</label>
+                    </div>
+                    <p id="fanStatusText" class="mb-0 small">Current Status: OFF</p>
                 </div>
             </div>
         </div>
 
-        <!-- Alarm Automation System -->
-        <div class="col-lg-3 mb-3">
-            <div class="card shadow-lg border-0 bg-warning text-dark">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Alarm Automation</h5>
-                    <label for="alarmAutomationSwitch">System Status:</label>
-                    <input type="checkbox" id="alarmAutomationSwitch" data-toggle="toggle">
-                    <p id="alarmStatusText">Current Status: Loading...</p>
+        <!-- Buzzer -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 text-dark" style="background-color: #ffc107;">
+                <div class="card-body d-flex flex-column align-items-center justify-content-between text-center">
+                    <h5 class="card-title mb-3">Alarm Automation</h5>
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" id="alarmAutomationSwitch" style="transform: scale(1.4);">
+                        <label class="form-check-label ms-2" for="alarmAutomationSwitch">Buzzer</label>
+                    </div>
+                    <p id="alarmStatusText" class="mb-0 small">Current Status: OFF</p>
                 </div>
             </div>
         </div>
 
-        <!-- Ventilation Automation System -->
-        <div class="col-lg-3 mb-3">
-            <div class="card shadow-lg border-0 bg-success text-white">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Ventilation Automation</h5>
-                    <label for="ventAutomationSwitch">System Status:</label>
-                    <input type="checkbox" id="ventAutomationSwitch" data-toggle="toggle">
-                    <p id="ventStatusText">Current Status: Loading...</p>
+        <!-- Ventilation -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 text-white" style="background-color: #28a745;">
+                <div class="card-body d-flex flex-column align-items-center justify-content-between text-center">
+                    <h5 class="card-title mb-3">Ventilation Automation</h5>
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" id="ventAutomationSwitch" style="transform: scale(1.4);">
+                        <label class="form-check-label ms-2" for="ventAutomationSwitch">Vent</label>
+                    </div>
+                    <p id="ventStatusText" class="mb-0 small">Current Status: OFF</p>
                 </div>
             </div>
         </div>
-
-
-
 
     </div>
+
 
     <!--Relay Switches Alert Area-->
     <div id="automationAlerts" class="mt-4"></div>
