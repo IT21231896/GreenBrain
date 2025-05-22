@@ -187,6 +187,19 @@
             </div>
         </div>
 
+        <!-- Ventilation Automation System -->
+        <div class="col-lg-3 mb-3">
+            <div class="card shadow-lg border-0 bg-success text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Ventilation Automation</h5>
+                    <label for="ventAutomationSwitch">System Status:</label>
+                    <input type="checkbox" id="ventAutomationSwitch" data-toggle="toggle">
+                    <p id="ventStatusText">Current Status: Loading...</p>
+                </div>
+            </div>
+        </div>
+
+
 
 
     </div>
@@ -263,6 +276,10 @@
             alarmSwitch.checked = data.automated_alarm == 1;
             document.getElementById('alarmStatusText').textContent = alarmSwitch.checked ? "Current Status: ON" : "Current Status: OFF";
 
+            // Vent automation Switch
+            const ventSwitch = document.getElementById('ventAutomationSwitch');
+            ventSwitch.checked = data.vent_status == 1;
+            document.getElementById('ventStatusText').textContent = ventSwitch.checked ? "Current Status: ON" : "Current Status: OFF";
 
 
             // Tank Visualization
@@ -414,6 +431,22 @@
         }
     }
 
+    async function updateVentAutomationStatus() {
+        const status = document.getElementById('ventAutomationSwitch').checked ? 1 : 0;
+        document.getElementById('ventStatusText').textContent = status === 1 ? "Current Status: ON" : "Current Status: OFF";
+
+        try {
+            const response = await fetch('/update_vent_automation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'status=' + status
+            });
+            const data = await response.json();
+            console.log("Vent automation updated:", data);
+        } catch (error) {
+            console.error('Error updating vent automation:', error);
+        }
+    }
 
 
     window.onload = function () {
@@ -424,6 +457,7 @@
         document.getElementById('irrigationSwitch').addEventListener('change', updateIrrigationStatus);
         document.getElementById('fanAutomationSwitch').addEventListener('change', updateFanAutomationStatus);
         document.getElementById('alarmAutomationSwitch').addEventListener('change', updateAlarmAutomationStatus);
+        document.getElementById('ventAutomationSwitch').addEventListener('change', updateVentAutomationStatus);
 
 
     };

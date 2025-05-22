@@ -473,6 +473,13 @@ def update_buzzer_status():
     sensor_ref.update({'buzzer_status': int(status)})
     return jsonify({"message": "Buzzer status updated", "status": status})
 
+@app.route('/update_vent_automation', methods=['POST'])
+@login_required
+def update_vent_automation():
+    status = request.form.get('status')
+    sensor_ref.update({'vent_status': int(status)})
+    return jsonify({"message": "Ventilation automation updated", "status": status})
+
 @app.route('/sensor_overview')
 @login_required
 def sensor_overview():
@@ -510,9 +517,11 @@ def get_sensor_data_realtime():
             if temperature > 40:
                 alerts.append("🔥 High temperature! Buzzer activated.")
                 buzzer_triggered = True
-            if soil_moisture < 300 and automation_irrigation == 0:
+            if soil_moisture > 3500 and automation_irrigation == 0:
                 alerts.append("🌱 Soil is dry. Enable auto irrigation or water manually. Buzzer activated.")
                 buzzer_triggered = True
+            else:
+                alerts.append("⚠️ Buzzer remains OFF.Because All conditions are optimal")
         else:
             sensor_ref.update({'buzzer_status': 0})
 
@@ -578,6 +587,7 @@ def get_sensor_data_realtime():
             'fan_automation': fan_automation,
             'automation_irrigation': automation_irrigation,
             'automated_alarm': automated_alarm,
+            'vent_status': int(sensor_data.get('vent_status', 0)),
             'alerts': alerts,
             'buzzer_status': int(sensor_data.get('buzzer_status', 0))
         }
