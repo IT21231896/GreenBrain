@@ -527,50 +527,44 @@ def get_sensor_data_realtime():
 
         sensor_ref.update({'buzzer_status': 1 if buzzer_triggered else 0})
 
-        #Irrigation Motor Automation Conditions
+
+
+        # Irrigation Motor Automation Logic
         if automation_irrigation == 1:
 
-            # Check if soil is dry, water tank and water level are sufficient
-            if soil_moisture > 2500:
-                if tank_percent > 20:
-                    if water_level < 1000:
-                        # Conditions all good - start irrigation
-                        sensor_ref.update({'device1_status': 1})
-                        alerts.append("Irrigation started: Soil moisture is high, and water is available.")
-                    else:
-                        # Water level too high - prevent overflow
-                        sensor_ref.update({'device1_status': 0})
-                        alerts.append("⚠️ Overflow detected: Irrigation stopped to prevent plant pot overflow.")
+            #if automation_irrigation On the firebase value is 1
+            sensor_ref.update({'device1_status': 1})
+
+            # Check water tank level is Optimal
+            if tank_percent >= 20:
+                # Start irrigation if soil is dry
+                if soil_moisture > 2500:
+                    alerts.append("Irrigation started: Soil moisture is high, and water is available.")
                 else:
-                    # Water tank too low
-                    sensor_ref.update({'device1_status': 0})
-                    alerts.append(
-                        "🚫 Irrigation stopped: Water tank level is below 20%. Please refill the tank to continue irrigation.")
+                    alerts.append("ℹ️ Soil moisture is within optimal range. No need for irrigation at this time.")
             else:
-                # Soil moisture is sufficient, no irrigation needed
-                sensor_ref.update({'device1_status': 0})
-                alerts.append("ℹ️ Soil moisture is within optimal range. No need for irrigation at this time.")
+                alerts.append("🚫 Warning: Water tank level is below 20%. Please refill the tank soon.")
+
+            # Alert if plant pot water level is high
+            if water_level > 1000:
+                alerts.append("⚠️ Warning: Water level in the plant pot is high. Monitor for potential overflow.")
 
         else:
-            # Automation off, turn off irrigation
+            # Turn off irrigation if automation is disabled
             sensor_ref.update({'device1_status': 0})
+
 
 
         #Vemdilation Fan Automation Conditions
         if fan_automation == 1:
-            #if humidity < 70:
-               # sensor_ref.update({'device2_status': 1})
-                #alerts.append("🌬️ Fan turned ON: Humidity is below 70%, improving air circulation.")
-            #elif humidity >= 70:
-             #   sensor_ref.update({'device2_status': 0})
-              #  alerts.append("✅ Fan turned OFF: Humidity is at or above 70%, no need for extra ventilation.")
+
+            sensor_ref.update({'device2_status': 1})
 
             if temperature > 35 or humidity < 70:
-                sensor_ref.update({'device2_status': 1})
                 alerts.append("🌬️ Fan turned ON: Temperature is above 35°C, cooling in progress.")
             elif temperature <= 35:
-                sensor_ref.update({'device2_status': 0})
                 alerts.append("✅ Fan turned OFF: Temperature is at or below 35°C, cooling not needed.")
+
         else:
             sensor_ref.update({'device2_status': 0})
 
