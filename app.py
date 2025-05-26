@@ -75,7 +75,8 @@ def predict_watering(temperature, humidity, soil_moisture, light_level):
     input_data = pd.DataFrame([[temperature, humidity, soil_moisture, light_level]],
                               columns=['Temperature (°C)', 'Humidity (%)', 'Soil Moisture (%)', 'Light Level (lux)'])
     input_data_scaled = scaler.transform(input_data)
-    input_data_poly = poly.transform(input_data_scaled)
+    input_data_scaled_df = pd.DataFrame(input_data_scaled, columns=input_data.columns)
+    input_data_poly = poly.transform(input_data_scaled_df)
     predicted_water_level = model.predict(input_data_poly)
     return predicted_water_level[0]
 
