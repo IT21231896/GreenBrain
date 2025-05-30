@@ -7,11 +7,11 @@
 #include <ESP32Servo.h>
 
 // -------------------- Configuration --------------------
-#define WIFI_SSID        "Hello buddy"
-#define WIFI_PASSWORD    "kijan321"
+#define WIFI_SSID        "#enter wifi ssid name here"
+#define WIFI_PASSWORD    "#enter wifi password here"
 
-#define API_KEY          "AIzaSyAVhq0YHkG3mjJY8TLqIa0oOOZR5cMCSgU"
-#define DATABASE_URL     "https://watering-7b4c7-default-rtdb.firebaseio.com/"
+#define API_KEY          "#enter API_KEY here"
+#define DATABASE_URL     "#enter database_url here"
 
 #define SCREEN_WIDTH     128
 #define SCREEN_HEIGHT    64
